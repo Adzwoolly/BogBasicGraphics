@@ -1,0 +1,115 @@
+package uk.adamwoollen.bogbasicgraphics;
+
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
+import java.util.ArrayList;
+
+import javax.swing.JPanel;
+
+public class PixelPainter extends JPanel{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1242870092798244754L;
+	
+	private static final int WIDTH = 250;
+	private static final int HEIGHT = 250;
+	
+	public PixelPainter() {
+		setPreferredSize(new Dimension(WIDTH * 2, HEIGHT * 2));
+	}
+	
+	@Override
+	public void paintComponent(Graphics g) {
+		//Setup painting stuff
+		final BufferedImage image;
+
+		image = (BufferedImage) createImage(WIDTH, HEIGHT);
+		WritableRaster raster = image.getRaster();
+		
+		///////////////////////////////////////////////////////////////////
+		//My experimental code that will probably go wrong
+		
+		/*
+		 * Plan of action:
+		 * for every face, draw lines between every vertex
+		 */
+		
+		ArrayList<int[]> linePoints = new ArrayList<int[]>();
+		
+		ThreeDObject pyramid = new ThreeDObject();
+		Transform.scale(pyramid, 50);
+		Transform.translate(pyramid, 50, 50, 0);
+		
+		int[][] faces = pyramid.getFaces();
+		double[][] vertices = pyramid.getVertices();
+		
+		for(double[] vertex : vertices){
+			System.out.println("original point at " + vertex[0] + ", " + vertex[1]);
+		}
+		
+		//For every face
+		for(int faceNum = 0; faceNum < faces.length; faceNum++){
+			int[] face = faces[faceNum];
+			System.out.println("Drawing face " + faceNum);
+			//Get every vertex - note that all shapes should really be triangles but, this should handle not triangles, too.
+			for(int vertexNum = 0; vertexNum < face.length; vertexNum++){
+				//int actualVertexNum = face[vertexNum];
+				double[] vertex1 = vertices[face[vertexNum]];
+				double[] vertex2 = vertices[face[(vertexNum + 1) % (face.length)]];
+				System.out.println("Drawing between points " + vertexNum + " and " + (vertexNum + 1) % (face.length));
+				/*
+				 * How to draw lines?
+				 * Calculate gradient and then start drawing!
+				 */
+				double xDif = vertex2[0] - vertex1[0];
+				double yDif = vertex2[1] - vertex1[1];
+				double gradient = yDif / xDif;
+				
+				//Now we have the gradient, let's start at vertex1 and draw!
+				double y = vertex1[1];
+				for(int xStep = (int) vertex1[0]; xStep < vertex2[0]; xStep++){
+					int[] point = {xStep, (int) y};
+					linePoints.add(point);
+					y = y + gradient;
+					System.out.println("Added a point: " + xStep + ", " + (int) y);
+				}
+			}
+		}
+		
+		
+		
+		
+		//////////////////////////////////////////////////////////////////
+		
+		//Do the painting
+		//Set colour of pixel
+		int[] iArray = { 0, 0, 0, 255 };
+		
+		//Aston green, I think - close enough, anyway
+		iArray[0] = 123;
+		iArray[1] = 222;
+		iArray[2] = 33;
+
+		//Paint coordinate x, y, colour
+		raster.setPixel(0, 0, iArray);
+		
+		/*for(int i = 0; i < WIDTH; i++){
+			for(int j = 0; j < HEIGHT; j ++){
+				raster.setPixel(i, j, iArray);
+			}
+		}*/
+		
+		for (int[] point : linePoints) {
+			//System.out.println("Drawing point " + point[0] + ", " + point[1]);
+			raster.setPixel(point[0], point[1], iArray);
+		}
+		
+		//Draw image (Wow, really?!)
+		g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+	}
+	
+}

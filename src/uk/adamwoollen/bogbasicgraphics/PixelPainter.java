@@ -41,9 +41,14 @@ public class PixelPainter extends JPanel{
 		ArrayList<int[]> linePoints = new ArrayList<int[]>();
 		
 		ThreeDObject pyramid = new ThreeDObject();
-		Transform.scale(pyramid, 50);
+		Transform.scale(pyramid, 75);
 		Transform.translate(pyramid, 50, 50, 0);
-		
+		Transform.rotateAboutX(pyramid, 190);
+		Transform.rotateAboutY(pyramid, 30);
+		Transform.translate(pyramid, 50, 150, 0);
+	
+	
+	
 		int[][] faces = pyramid.getFaces();
 		double[][] vertices = pyramid.getVertices();
 		
@@ -60,7 +65,7 @@ public class PixelPainter extends JPanel{
 				//int actualVertexNum = face[vertexNum];
 				double[] vertex1 = vertices[face[vertexNum]];
 				double[] vertex2 = vertices[face[(vertexNum + 1) % (face.length)]];
-				System.out.println("Drawing between points " + vertexNum + " and " + (vertexNum + 1) % (face.length));
+				System.out.println("0 - Drawing between points " + vertexNum + " and " + (vertexNum + 1) % (face.length));
 				/*
 				 * How to draw lines?
 				 * Calculate gradient and then start drawing!
@@ -68,15 +73,61 @@ public class PixelPainter extends JPanel{
 				double xDif = vertex2[0] - vertex1[0];
 				double yDif = vertex2[1] - vertex1[1];
 				double gradient = yDif / xDif;
+				double invGradient = xDif / yDif;
+				
+				System.out.println("1 - Drawing between points " + vertexNum + " and " + (vertexNum + 1) % (face.length));
 				
 				//Now we have the gradient, let's start at vertex1 and draw!
+				double x = vertex1[0];
 				double y = vertex1[1];
-				for(int xStep = (int) vertex1[0]; xStep < vertex2[0]; xStep++){
-					int[] point = {xStep, (int) y};
-					linePoints.add(point);
-					y = y + gradient;
-					System.out.println("Added a point: " + xStep + ", " + (int) y);
+				
+				//Draw in x direction
+				if(vertex1[0] < vertex2[0]){
+					for(int xStep = (int) vertex1[0]; xStep < vertex2[0]; xStep++){
+						int[] point = {xStep, (int) y};
+						
+						if(point[0] >= 0 && point[0] < WIDTH && point[1] >= 0 && point[1] < HEIGHT){
+							linePoints.add(point);
+							System.out.println("(x-run) Added point " + point[0] + ", " + point[1]);
+						}
+						y += gradient;
+					}
+				} else{
+					for(int xStep = (int) vertex2[0]; vertex2[0] < xStep; xStep--){
+						int[] point = {xStep, (int) y};
+						if(point[0] >= 0 && point[0] < WIDTH && point[1] >= 0 && point[1] < HEIGHT){
+							linePoints.add(point);
+							System.out.println("(x-run) Added point " + point[0] + ", " + point[1]);
+						}
+						y -= gradient;
+					}
 				}
+				
+				
+				System.out.println("2 - Drawing between points " + vertexNum + " and " + (vertexNum + 1) % (face.length));
+				
+				//Draw in y direction
+				if(vertex1[1] < vertex2[1]){
+					for(int yStep = (int) vertex1[1]; yStep < vertex2[1]; yStep++){
+						int[] point = {(int) x, yStep};
+						if(point[0] >= 0 && point[0] < WIDTH && point[1] >= 0 && point[1] < HEIGHT){
+							linePoints.add(point);
+							System.out.println("(y-run) Added point " + point[0] + ", " + point[1]);
+						}
+						x += invGradient;
+					}
+				} else{
+					for(int yStep = (int) vertex1[1]; vertex2[1] < yStep; yStep--){
+						int[] point = {(int) x, yStep};
+						if(point[0] >= 0 && point[0] < WIDTH && point[1] >= 0 && point[1] < HEIGHT){
+							linePoints.add(point);
+							System.out.println("(y-run) Added point " + point[0] + ", " + point[1]);
+						}
+						x -= invGradient;
+					}
+				}
+				
+				System.out.println("3 - Drawing between points " + vertexNum + " and " + (vertexNum + 1) % (face.length));
 			}
 		}
 		
@@ -89,19 +140,23 @@ public class PixelPainter extends JPanel{
 		//Set colour of pixel
 		int[] iArray = { 0, 0, 0, 255 };
 		
-		//Aston green, I think - close enough, anyway
-		iArray[0] = 123;
-		iArray[1] = 222;
-		iArray[2] = 33;
+		
 
 		//Paint coordinate x, y, colour
 		raster.setPixel(0, 0, iArray);
 		
-		/*for(int i = 0; i < WIDTH; i++){
+		for(int i = 0; i < WIDTH; i++){
 			for(int j = 0; j < HEIGHT; j ++){
 				raster.setPixel(i, j, iArray);
 			}
-		}*/
+		}
+		//lear screen
+		g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+		
+		//Aston green, I think - close enough, anyway
+		iArray[0] = 123;
+		iArray[1] = 222;
+		iArray[2] = 33;
 		
 		for (int[] point : linePoints) {
 			//System.out.println("Drawing point " + point[0] + ", " + point[1]);
@@ -110,6 +165,11 @@ public class PixelPainter extends JPanel{
 		
 		//Draw image (Wow, really?!)
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+		
+		
+		
+	
+		
 	}
 	
 }

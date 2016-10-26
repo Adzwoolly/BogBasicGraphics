@@ -11,7 +11,8 @@ import javax.swing.JPanel;
 public class PixelPainter extends JPanel{
 
 	/**
-	 * 
+	 * Contains constructor and a method for drawing the graphics.
+	 * @author Adam Woollen
 	 */
 	private static final long serialVersionUID = 1242870092798244754L;
 	
@@ -154,9 +155,9 @@ public class PixelPainter extends JPanel{
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 		
 		//Aston green, I think - close enough, anyway
-		iArray[0] = 123;
-		iArray[1] = 222;
-		iArray[2] = 33;
+		iArray[0] = 106;
+		iArray[1] = 146;
+		iArray[2] = 58;
 		
 		for (int[] point : linePoints) {
 			//System.out.println("Drawing point " + point[0] + ", " + point[1]);

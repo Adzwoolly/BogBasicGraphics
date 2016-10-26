@@ -1,5 +1,10 @@
 package uk.adamwoollen.bogbasicgraphics;
 
+/**
+ * Class to contain the vertices for 3D objects.
+ * @author Adzwoolly
+ *
+ */
 public class ThreeDObject {
 	
 	private double[][] vertices = {{0, 0, 0}, {1, 0, 0}, {0, 0, 1}, {1, 0, 1}, {0.5, 1, 0.5}};

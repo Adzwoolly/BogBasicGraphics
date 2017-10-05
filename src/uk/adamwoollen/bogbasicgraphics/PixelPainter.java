@@ -18,11 +18,20 @@ public class PixelPainter extends JPanel{
 	
 	private static final int WIDTH = 250;
 	private static final int HEIGHT = 250;
+	private Integer[] colours;
 	
-	public PixelPainter() {
+	public PixelPainter(int red, int blue, int green) {
 		setPreferredSize(new Dimension(WIDTH * 2, HEIGHT * 2));
+		this.colours = new Integer[3];
+		this.colours[0] = red;
+		this.colours[1] = blue;
+		this.colours[2] = green;
+		for(int colour : colours) {
+			System.out.println(colour);
+		}
 	}
 	
+
 	@Override
 	public void paintComponent(Graphics g) {
 		//Setup painting stuff
@@ -155,9 +164,9 @@ public class PixelPainter extends JPanel{
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 		
 		//Aston green, I think - close enough, anyway
-		iArray[0] = 106;
-		iArray[1] = 146;
-		iArray[2] = 58;
+		iArray[0] = colours[0];
+		iArray[1] = colours[1];
+		iArray[2] = colours[2];
 		
 		for (int[] point : linePoints) {
 			//System.out.println("Drawing point " + point[0] + ", " + point[1]);
@@ -166,7 +175,6 @@ public class PixelPainter extends JPanel{
 		
 		//Draw image (Wow, really?!)
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
-		
 		
 		
 	

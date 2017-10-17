@@ -9,6 +9,7 @@ public class Main {
 	
 	/**
 	 * @author Adam Woollen 
+	 * @author Jamie Ingram
 	 * @param args Command line arguments (not used).
 	 */
 	public static void main(String[] args) {

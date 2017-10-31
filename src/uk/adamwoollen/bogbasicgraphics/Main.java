@@ -1,7 +1,5 @@
 package uk.adamwoollen.bogbasicgraphics;
 
-import java.awt.Component;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -30,45 +28,64 @@ public class Main {
 				pp = new PixelPainter(colours[0], colours[1], colours[2]);
 			}
 			else{
-				error = "Args are not RGB values: setting default values.\nArguments must be numerical values between 0 and 255";
-				pp = new PixelPainter(255, 255, 255);
+				error = "Args are not RGB values: setting default values.\nGUI being launched to allow colour choice.";
+				pp = guiColourChooser();
 			}
 		}
 		
 		//If no arguments given, a GUI option to display 4 colours displays.
 		else {
-			Object[] colourOptions = {"White", "Red", "Green", "Blue"};
-			int chosenColour = JOptionPane.showOptionDialog(null, 
-					"Which colour would you like to display?", 
-					"Colour Options",
-					JOptionPane.YES_NO_CANCEL_OPTION,
-					JOptionPane.QUESTION_MESSAGE,
-					null,
-					colourOptions,
-					colourOptions[0]);
-			
-			switch(chosenColour) {
-				case 0: 
-					pp = new PixelPainter(255, 255, 255);
-					break;
-				
-				case 1:
-					pp = new PixelPainter(255, 0, 0);
-					break;
-				
-				case 2:
-					pp = new PixelPainter(0, 255, 0);
-					break;
-				
-				case 3:
-					pp = new PixelPainter(0, 0, 255);
-					break;
-			}
+			pp = guiColourChooser();
 		}
+		/*
+		 * Potentially change this in future so it checks if pp != null. Would limit number of branches above.
+		 */
 		mainFrame.add(pp);
 		mainFrame.pack();
 		mainFrame.setVisible(true);
 		System.out.println(error);
 	}
-
+	
+	/**
+	 * Produces a GUI with buttons that allows the user to select pre-defined colours.
+	 * To add more colours: 
+	 * 		add the colour name in the colourOptions array as a String
+	 * 		add the corresponding RGB values in the switch statement as a pp being constructed.
+	 * 		e.g. for black 
+	 * 		case 4:
+	 * 			pp = new PixelPainter(0,0,0);
+	 * 			break;   
+	 * @return PixelPainter object with the chosen colour values.
+	 */
+	private static PixelPainter guiColourChooser(){
+		PixelPainter pp = null;
+		Object[] colourOptions = {"White", "Red", "Green", "Blue"};
+		int chosenColour = JOptionPane.showOptionDialog(null, 
+				"Which colour would you like to display?", 
+				"Colour Options",
+				JOptionPane.YES_NO_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				colourOptions,
+				colourOptions[0]);
+		
+		switch(chosenColour) {
+			case 0: 
+				pp = new PixelPainter(255, 255, 255);
+				break;
+			
+			case 1:
+				pp = new PixelPainter(255, 0, 0);
+				break;
+			
+			case 2:
+				pp = new PixelPainter(0, 255, 0);
+				break;
+			
+			case 3:
+				pp = new PixelPainter(0, 0, 255);
+				break;
+		}
+		return pp;
+	}
 }
